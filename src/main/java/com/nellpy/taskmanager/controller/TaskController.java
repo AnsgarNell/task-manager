@@ -2,6 +2,7 @@ package com.nellpy.taskmanager.controller;
 
 import com.nellpy.taskmanager.entity.Task;
 import com.nellpy.taskmanager.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,14 +43,14 @@ public class TaskController {
 
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task input) {
+    public ResponseEntity<Task> createTask(@Valid @RequestBody Task input) {
         Task task = taskService.createTask(input);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
 
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
+    public Task updateTask(@PathVariable Long id, @Valid @RequestBody Task updatedTask) {
         return taskService.updateTask(id, updatedTask);
     }
 
