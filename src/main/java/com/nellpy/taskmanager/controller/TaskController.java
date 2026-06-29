@@ -1,5 +1,7 @@
 package com.nellpy.taskmanager.controller;
 
+import com.nellpy.taskmanager.dto.TaskRequest;
+import com.nellpy.taskmanager.dto.TaskResponse;
 import com.nellpy.taskmanager.entity.Task;
 import com.nellpy.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
@@ -43,14 +45,14 @@ public class TaskController {
 
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@Valid @RequestBody Task input) {
-        Task task = taskService.createTask(input);
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest input) {
+        TaskResponse task = taskService.createTask(input);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
 
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @Valid @RequestBody Task updatedTask) {
+    public TaskResponse updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequest updatedTask) {
         return taskService.updateTask(id, updatedTask);
     }
 

@@ -1,7 +1,10 @@
 package com.nellpy.taskmanager.service;
 
+import com.nellpy.taskmanager.dto.TaskRequest;
+import com.nellpy.taskmanager.dto.TaskResponse;
 import com.nellpy.taskmanager.entity.Task;
 import com.nellpy.taskmanager.exception.TaskNotFoundException;
+import com.nellpy.taskmanager.mapper.TaskMapper;
 import com.nellpy.taskmanager.repository.TaskRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -15,9 +18,12 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
+    private final TaskMapper taskMapper;
 
-    public TaskService(TaskRepository taskRepository) {
+
+    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
+        this.taskMapper = taskMapper;
     }
 
 
@@ -49,17 +55,19 @@ public class TaskService {
     }
 
 
-    public Task createTask(Task input) {
-        return taskRepository.save(input);
+    public TaskResponse createTask(TaskRequest input) {
+        Task task = taskMapper.toEntity(input);
+        Task savedTask = taskRepository.save(task);
+        return taskMapper.toResponse(savedTask);
     }
 
 
-    public Task updateTask(Long id, Task updatedTask) {
+    public TaskResponse updateTask(Long id, TaskRequest updatedTask) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
-        task.setTitle(updatedTask.getTitle());
-        task.setDescription(updatedTask.getDescription());
-        task.setCompleted(updatedTask.getCompleted());
-        return taskRepository.save(task);
+        taskMapper.updateEntityFromRequest(task, updatedTask);
+        Task savedTask =  taskRepository.save(task);
+        return taskMapper.toResponse(savedTask);
     }
+
 }
