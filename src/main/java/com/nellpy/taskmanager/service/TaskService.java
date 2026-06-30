@@ -34,24 +34,34 @@ public class TaskService {
     }
 
 
-    public List<Task> findAll() {
-        return taskRepository.findAll();
+    public List<TaskResponse> findAll() {
+        return taskRepository.findAll()
+                .stream()
+                .map(taskMapper::toResponse)
+                .toList();
     }
 
 
-    public List<Task> getTasksByCompletionStatus(boolean status) {
-        return taskRepository.findByCompleted(status);
+    public List<TaskResponse> getTasksByCompletionStatus(boolean status) {
+        return taskRepository.findByCompleted(status)
+                .stream()
+                .map(taskMapper::toResponse)
+                .toList();
     }
 
 
-    public Task findById(Long id) {
-        return taskRepository.findById(id)
+    public TaskResponse findById(Long id) {
+        Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
+        return taskMapper.toResponse(task);
     }
 
 
-    public List<Task> searchTasksByTitle(String title) {
-        return taskRepository.findByTitleContainingIgnoreCase(title);
+    public List<TaskResponse> searchTasksByTitle(String title) {
+        return taskRepository.findByTitleContainingIgnoreCase(title)
+                .stream()
+                .map(taskMapper::toResponse)
+                .toList();
     }
 
 

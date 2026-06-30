@@ -2,7 +2,6 @@ package com.nellpy.taskmanager.controller;
 
 import com.nellpy.taskmanager.dto.TaskRequest;
 import com.nellpy.taskmanager.dto.TaskResponse;
-import com.nellpy.taskmanager.entity.Task;
 import com.nellpy.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,13 +32,13 @@ public class TaskController {
 
 
     @GetMapping
-    public List<Task> getAllTasks() {
+    public List<TaskResponse> getAllTasks() {
         return taskService.findAll();
     }
 
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id) {
+    public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.findById(id);
     }
 
@@ -65,13 +64,13 @@ public class TaskController {
 
 
     @GetMapping("/completed/{status}")
-    public List<Task> getTasksByCompletionStatus(@PathVariable boolean status) {
+    public List<TaskResponse> getTasksByCompletionStatus(@PathVariable boolean status) {
         return taskService.getTasksByCompletionStatus(status);
     }
 
 
     @GetMapping("/search")
-    public List<Task> searchTasksByTitle(@RequestParam String title) {
+    public List<TaskResponse> searchTasksByTitle(@RequestParam String title) {
         return taskService.searchTasksByTitle(title);
     }
 
