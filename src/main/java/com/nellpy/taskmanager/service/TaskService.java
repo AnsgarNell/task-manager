@@ -7,6 +7,8 @@ import com.nellpy.taskmanager.exception.TaskNotFoundException;
 import com.nellpy.taskmanager.mapper.TaskMapper;
 import com.nellpy.taskmanager.repository.TaskRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,11 +36,9 @@ public class TaskService {
     }
 
 
-    public List<TaskResponse> findAll() {
-        return taskRepository.findAll()
-                .stream()
-                .map(taskMapper::toResponse)
-                .toList();
+    public Page<TaskResponse> findAll(Pageable pageable) {
+        return taskRepository.findAll(pageable)
+                .map(taskMapper::toResponse);
     }
 
 
@@ -47,6 +47,12 @@ public class TaskService {
                 .stream()
                 .map(taskMapper::toResponse)
                 .toList();
+    }
+
+
+    public Page<TaskResponse> getTasksByCompletionStatus(boolean status, Pageable pageable) {
+        return taskRepository.findByCompleted(status, pageable)
+                .map(taskMapper::toResponse);
     }
 
 

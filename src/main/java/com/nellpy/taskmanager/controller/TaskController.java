@@ -4,6 +4,10 @@ import com.nellpy.taskmanager.dto.TaskRequest;
 import com.nellpy.taskmanager.dto.TaskResponse;
 import com.nellpy.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,8 +36,16 @@ public class TaskController {
 
 
     @GetMapping
-    public List<TaskResponse> getAllTasks() {
-        return taskService.findAll();
+    public ResponseEntity<Page<TaskResponse>> getAllTasksPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDir
+    ) {
+        Sort sort = sortDir.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<TaskResponse> tasks = taskService.findAll(pageable);
+        return ResponseEntity.ok(tasks);
     }
 
 
